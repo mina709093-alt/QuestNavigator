@@ -5,7 +5,7 @@
 -- /qn talents  : 특성 정보
 -- /qn item <아이템번호 또는 링크> : 아이템 정보와 능력치 (캐시에 없는 아이템 테스트)
 -- /qn quest    : 퀘스트 창이 열린 상태에서 보상 목록 읽기 (선택/고정 구분)
--- /qn auto     : 퀘스트 창이 열릴 때 자동으로 보상 읽기 켜기/끄기
+-- /qn auto     : 퀘스트 창이 열릴 때 자동으로 보상 읽기 켜기/끄기 (기본: 꺼짐, /qn 로그 도 같음)
 -- /qn log      : 마지막 출력을 SavedVariables에 보관한 내용 개수 표시
 
 local function Print(msg)
@@ -274,7 +274,9 @@ pcall(ev.RegisterEvent, ev, "QUEST_PROGRESS")
 ev:SetScript("OnEvent", function(_, e, a1)
   if e == "ADDON_LOADED" and a1 == "QuestNavigator" then
     QuestNavDB = QuestNavDB or {}
-    auto = QuestNavDB.auto and true or false
+    -- 0.3.4부터 기본은 꺼짐. 예전에 켜 둔 설정(auto)은 무시하고, 새로 켠 경우(autoLog)만 따른다
+    QuestNavDB.auto = nil
+    auto = QuestNavDB.autoLog and true or false
     return
   end
   if auto and (e == "QUEST_COMPLETE" or e == "QUEST_DETAIL") then
@@ -293,12 +295,12 @@ SlashCmdList["QUESTNAV"] = function(msg)
   elseif cmd == "traits" then Safe("traits", CmdTraits)
   elseif cmd == "item" then Safe("item", CmdItem, arg)
   elseif cmd == "quest" then Safe("quest", CmdQuest)
-  elseif cmd == "auto" then
+  elseif cmd == "auto" or cmd == "로그" then
     auto = not auto
     QuestNavDB = QuestNavDB or {}
-    QuestNavDB.auto = auto
+    QuestNavDB.autoLog = auto
     Print("퀘스트창 자동 읽기: " .. (auto and "켜짐" or "꺼짐"))
   else
-    Print("명령: /qn api | gear | talents | traits | item <번호> | quest | auto")
+    Print("명령: /qn api | gear | talents | traits | item <번호> | quest | 로그(퀘스트창 자동 로그 켜기/끄기)")
   end
 end
