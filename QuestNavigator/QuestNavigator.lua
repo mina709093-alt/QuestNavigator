@@ -165,10 +165,14 @@ local function CmdQuest()
     end
   end
   -- 퀘스트 로그 선택 시 (퀘스트 수락 전 단계 확인용)
-  if GetQuestLogChoiceInfo and GetNumQuestLogChoices then
-    local sel = GetQuestLogSelection and GetQuestLogSelection() or nil
-    local n = GetNumQuestLogChoices() or 0
-    Print("퀘스트 로그 선택된 항목 " .. S(sel) .. " 선택 보상 " .. S(n) .. "개")
+  -- 포에버에서는 GetNumQuestLogChoices 에 퀘스트 번호(questID)를 넘겨야 함
+  if GetNumQuestLogChoices then
+    local qid = (C_QuestLog and C_QuestLog.GetSelectedQuest and C_QuestLog.GetSelectedQuest())
+      or (GetQuestID and GetQuestID()) or nil
+    if qid and qid ~= 0 then
+      local ok, n = pcall(GetNumQuestLogChoices, qid, true)
+      Print("퀘스트 로그 선택된 퀘스트 " .. S(qid) .. " 선택 보상 " .. (ok and S(n) or ("오류: " .. tostring(n))) .. "개")
+    end
   end
 end
 
