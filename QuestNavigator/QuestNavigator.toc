@@ -1,9 +1,10 @@
 ## Interface: 16001
 ## Title: Quest Navigator (1단계 검증)
 ## Notes: 장비/특성/퀘스트 보상 정보를 읽을 수 있는지 확인하는 검증용 애드온
-## Version: 0.3.4
+## Version: 0.3.5
 ## Category: 상수팩
-## SavedVariables: QuestNavDB
+## SavedVariables: QuestNavDB, SangsuPackDB
 
 SangsuPack.lua
 QuestNavigator.lua
+Changelog.lua
